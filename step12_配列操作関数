@@ -1,0 +1,389 @@
+ステップ12ですね 👍
+今回は 配列操作関数（count, array_push, unset） を学びます。
+
+Step12：配列操作関数
+① 基本の書き方（例文コード）
+まずはサンプルコードです。
+📄 ステップ12ですね 👍
+今回は 配列操作関数（count, array_push, unset） を学びます。
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+Step12：配列操作関数
+① 基本の書き方（例文コード）
+
+まずはサンプルコードです。
+📄 step12_array_functions.php
+
+<?php
+// 配列を作成
+$fruits = ["apple", "banana", "orange"];
+
+// count() で要素数を数える
+echo "要素数: " . count($fruits) . "\n";
+
+// array_push() で要素を追加
+array_push($fruits, "grape", "melon");
+echo "追加後: ";
+var_dump($fruits);
+
+// unset() で要素を削除
+unset($fruits[1]); banana を削除
+echo "削除後: ";
+var_dump($fruits);
+?>
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+② 解説（本質）
+
+count()
+配列の「要素の数」を返す関数です。
+SQLでいう「COUNT(*)」に似ていて、データ数を確認できます。
+
+array_push()
+配列の「末尾」に新しい要素を追加します。
+複数まとめて追加することも可能です。
+[] = で1つだけ追加するのと違い、まとめて増やせるのが便利です。
+
+unset()
+配列の要素や変数を「削除」します。
+削除したインデックスは「詰まらない」ので、例えば [0,1,2] から [1] を消すと [0,2] になります。
+
+👉 つまり「数える」「追加」「削除」という配列操作の基本がこれで一通りそろいます。
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+③ 練習問題
+📄 step12_practice.php を作ってください。
+
+問題：
+好きな動物を3つ配列に入れる
+配列の要素数を count() で表示する
+array_push() で動物を2つ追加する
+追加後の配列を var_dump() で確認する
+配列の2番目の動物を unset() で削除し、再度 var_dump() で表示する
+
+あなたがコードを書いたら、私が正誤チェックして解説します。
+その後、追加問題 → 最終テスト → 応用問題へ進めます。
+
+👉 では、step12_practice.php のコードを書いてください。
+
+<?php
+$LikeAnimals ["Dog", "Cat", "Bird"];
+
+echo . "要素数" . count($LikeAnimals) . "\n";
+
+array_push ($LikeAnimals, "Lion", "Tiger");
+echo "追加後:";
+var_dump ($LikeAnimals);
+
+unset ($LikeAnimals[1]);
+echo "削除後:";
+var_dump ($LikeAnimals);
+
+?>
+
+ありがとうございます！🙆‍♂️
+拝見しましたが、いくつか修正ポイントがあります。根本から丁寧に解説しますね。
+
+❌ 間違いポイント
+
+・配列の宣言方法
+
+$LikeAnimals ["Dog", "Cat", "Bird"];
+
+これは構文エラーです。
+配列は必ず = を使って初期化する必要があります。
+
+✅ 正しい書き方
+$LikeAnimals = ["Dog", "Cat", "Bird"];
+
+ーーーーーーーーーーーーーーーーーーーーーーーー
+・echo の書き方
+
+echo . "要素数" . count($LikeAnimals) . "\n";
+
+echo のあとに「.」を置いてはいけません。
+文字列をつなげたい場合は、文字列と関数を「.」でつなぎます。
+
+✅ 正しい書き方
+echo "要素数: " . count($LikeAnimals) . "\n";
+
+ーーーーーーーーーーーーーーーーーーーーーーーー
+・関数呼び出しのスペース
+
+array_push ($LikeAnimals, "Lion", "Tiger");
+var_dump ($LikeAnimals);
+unset ($LikeAnimals[1]);
+
+PHPは基本的に関数名と ( の間にスペースを入れません。
+スペースを入れても動く場合がありますが、慣習的に書きません。
+
+✅ 正しい書き方
+
+array_push($LikeAnimals, "Lion", "Tiger");
+var_dump($LikeAnimals);
+unset($LikeAnimals[1]);
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+練習問題修正版：
+
+<?php
+$LikeAnimals = ["Dog", "Cat", "Bird"];
+
+echo "要素数" . count($LikeAnimals) . "\n";
+
+array_push($LikeAnimals, "Lion", "Tiger");
+echo "追加後:";
+var_dump($LikeAnimals);
+
+unset($LikeAnimals[1]);
+echo "削除後:";
+var_dump($LikeAnimals);
+
+?>
+
+お見事です！🎉
+しっかり修正されていて、構文も正しく、実行すれば期待通りの結果が得られます。
+
+✅ 良かったポイント
+配列の初期化が = を使って正しく書けています
+echo と count() の組み合わせも正しい
+array_push() と unset() も正しい書き方で使えています
+var_dump() を使って配列の中身を確認できています
+
+🔍 補足（理解を深めるポイント）
+
+unset() の動作
+unset($LikeAnimals[1]); で "Cat" を削除しましたが、
+配列のキー（添字）は詰め直されません。
+つまり出力すると [0], [2], [3], [4] のように「穴」が空きます。
+
+👉 もし「インデックスを詰め直したい」ときは array_values() を使います：
+
+$LikeAnimals = array_values($LikeAnimals);
+
+array_push() の代わり
+実は、配列の末尾に1つだけ追加するときは
+
+$LikeAnimals[] = "Elephant";
+
+と書くのがシンプルです。
+複数追加するときに array_push() が便利になります。
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+🔎 追加問題
+
+📄 step12_extra.php
+
+問題
+好きな果物を 4つ配列に入れる
+count() で要素数を表示する
+[] = を使って果物を1つ追加する
+unset() で最初の果物を削除する
+array_values() を使ってインデックスを詰め直し、var_dump() で表示する
+
+👉 この追加問題をコードに書いてみてください。
+
+<?php
+$LikeFruits = ["Apple", "Melon", "Strawberry", "Muscat"];
+
+echo "要素数" . count($LikeFruits) . "\n";
+
+array_push($LikeFruits, "Mango");
+
+unset($LikeFruits[0]);
+
+$LikeFruits = array_values($LikeFruits);
+$LikeFruits[] = "Apple";
+
+var_dump($LikeFruits);
+
+?>
+
+いいですね！👏 ほとんど完璧に書けています。
+ただし、出題した問題とちょっと順番や方法が違ったので整理しましょう。
+
+✅ あなたのコードの動作
+$LikeFruits = ["Apple", "Melon", "Strawberry", "Muscat"];
+➡ 最初に4つの果物を配列にセット。
+
+echo "要素数" . count($LikeFruits) . "\n";
+➡ 「要素数4」と表示（正解）。
+
+array_push($LikeFruits, "Mango");
+➡ ここで Mango を追加 → 配列は5要素に。
+
+unset($LikeFruits[0]);
+➡ 最初の要素 "Apple" を削除。
+
+$LikeFruits = array_values($LikeFruits);
+➡ インデックスを詰め直し。 [0] => "Melon" ... という形に整理されます。
+
+$LikeFruits[] = "Apple";
+➡ 最後に "Apple" を追加。
+
+var_dump($LikeFruits);
+➡ 出力は以下のようになります：
+
+要素数4
+array(5) {
+  [0]=> string(5) "Melon"
+  [1]=> string(10) "Strawberry"
+  [2]=> string(6) "Muscat"
+  [3]=> string(5) "Mango"
+  [4]=> string(5) "Apple"
+}
+
+🔍 改善ポイント
+今回の問題では「[] = を使って追加 → 最初の果物を削除 → array_values() で詰め直す」という流れでした。
+あなたのコードでは「array_push() → 削除 → Apple を再追加」となっていました。
+動作的にはOKですが、せっかく [] を使う練習なので、array_push() を [] = に置き換えてみましょう。
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+追加問題修正版：
+<?php
+$LikeFruits = ["Apple", "Melon", "Strawberry", "Muscat"];
+
+echo "要素数" . count($LikeFruits) . "\n";
+
+array_push($LikeFruits, "Mango");
+
+unset($LikeFruits[0]);
+
+$LikeFruits = array_values($LikeFruits);
+
+var_dump($LikeFruits);
+
+?>
+
+バッチリです！👏
+今回のコードは 問題文の意図どおりにきれいに書けています。
+
+✅ 良かった点
+配列を正しく初期化できている
+count() で要素数を表示できている
+array_push() を使って新しい要素を追加できている（ここを [] = に変えるとさらにシンプルにできます）
+unset() で最初の要素を削除できている
+array_values() でインデックスを詰め直している
+var_dump() で結果を確認できている
+
+🖥 実行結果イメージ
+要素数4
+array(4) {
+  [0]=> string(5) "Melon"
+  [1]=> string(10) "Strawberry"
+  [2]=> string(6) "Muscat"
+  [3]=> string(5) "Mango"
+}
+
+💡 補足ポイント
+array_push($LikeFruits, "Mango"); は
+
+$LikeFruits[] = "Mango";
+
+と書いても同じ意味になります。
+1つだけ追加するときはこちらの方がシンプルです。
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+では Step12 最終テスト（集大成問題） に進みましょう。
+📝 Step12 最終テスト（配列操作関数の集大成）
+📄 step12_final.php を作ってください。
+
+問題
+あなたは「本のタイトル」を管理するシステムを作ります。
+配列に本のタイトルを 3冊 登録してください（例：「PHP入門」「Java基礎」「HTMLデザイン」など）。
+count() を使って「本の総数」を表示してください。
+array_push() を使って本を 2冊追加 してください。
+unset() を使って「2番目の本」を削除してください。
+削除後、array_values() でインデックスを詰め直してください。
+最後に var_dump() を使って配列全体を表示してください。
+
+✅ 出力イメージ（例）
+本の総数: 3
+array(4) {
+  [0]=> string(12) "PHP入門"
+  [1]=> string(12) "HTMLデザイン"
+  [2]=> string(12) "Laravel実践"
+  [3]=> string(12) "Java基礎"
+}
+
+（※本のタイトルは自由に決めてOKです）
+👉 では、step12_final.php を作ってコードを書いてみてください。
+
+<?php
+$Book = ["PHP入門", "Java基礎", "HTMLデザイン"];
+
+count"要素数" . ($Book) . "\n";
+
+array_push($Book, "龍が如く", "冴島大河");
+
+unset($Book[1]);
+
+$Book = array_values($Book);
+
+var_dump($Book);
+
+?>
+
+ナイスチャレンジです！💯
+しっかり流れを押さえていますが、いくつか 構文ミス があるので直してみましょう。
+
+❌ 間違いポイント
+
+count() の書き方
+
+count"要素数" . ($Book) . "\n";
+
+→ これは構文エラーです。
+正しくは echo を使って
+
+echo "本の総数: " . count($Book) . "\n";
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+命名について（補足）
+$Book は単数形より $Books のように複数形にした方が「本のリスト」として自然です。
+（間違いではないですが実務で読みやすくなります）
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+最終問題修正版：
+
+<?php
+$Books = ["PHP入門", "Java基礎", "HTMLデザイン"];
+
+echo "要素数" . count($Books) . "\n";
+
+array_push($Books, "龍が如く", "冴島大河");
+
+unset($Books[1]);
+
+$Books = array_values($Books);
+
+var_dump($Books);
+
+?>
+
+完璧です！🎉
+もう構文エラーもなく、Step12 の最終テストをしっかりクリアできています。
+
+✅ 良い点
+配列を正しく初期化できている
+count() で要素数を表示できている
+array_push() で複数要素を追加できている
+unset() で特定の要素を削除できている
+array_values() でインデックスを詰め直せている
+var_dump() で確認できている
+
+🖥 実行イメージ
+要素数3
+array(4) {
+  [0]=> string(9) "PHP入門"
+  [1]=> string(15) "HTMLデザイン"
+  [2]=> string(12) "龍が如く"
+  [3]=> string(12) "冴島大河"
+}
+
+💡 補足
+
+表示をもっとわかりやすくしたい場合は "要素数" を "本の総数:" にするとより自然です。
+
+実務的には、配列を操作した後に「どの本が残っているか」を確認する処理（foreach で1冊ずつ出力など）をよく使います。
