@@ -1,0 +1,860 @@
+📘 PHP基礎入門 学習テンプレート（ステップ細分化版） のルールに従い、
+これから ステップ25：「アクセス修飾子（public, private, protected）」 を始めます。
+
+🧩 Step25：アクセス修飾子（public, private, protected）
+
+
+① 基本の書き方（例文コード）
+<?php
+
+class User {
+    public $name;         // どこからでもアクセス可能
+    private $email;       // クラスの外からアクセスできない
+    protected $password;  // 継承したクラスからはアクセス可能
+
+    public function __construct($name, $email, $password) {
+        $this->name = $name;
+        $this->email = $email;
+        $this->password = $password;
+    }
+
+    public function showProfile() {
+        echo "名前: {$this->name}\n";
+        echo "メール: {$this->email}\n";
+        // privateも同じクラス内ならOK
+    }
+}
+
+$user1 = new User("冴島大河", "taiga@example.com", "pass123");
+
+// 外からアクセスできる
+echo $user1->name . "\n";
+
+// 外からアクセスできない（エラーになります）
+// echo $user1->email;
+
+// メソッド経由ならOK
+$user1->showProfile();
+
+?>
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+② なぜ重要なのか（意義・メリット）
+
+アクセス修飾子は、**データの「見せる範囲」と「守る範囲」**を決める仕組みです。
+これがないと、外部のコードが勝手に値を変えたり、壊したりするリスクがあります。
+
+public：外部からも自由にアクセスできる。
+→ ただし、無制限に使うと安全性が下がる。
+
+private：クラス内だけで使える。
+→ 外部に触らせたくないデータ（パスワードなど）を守る。
+
+protected：継承した子クラスからはアクセスできる。
+→ 継承を使う際に便利（親の情報を引き継げるが、外部からは見えない）。
+
+つまり、安全で拡張性のあるクラス設計のための鍵になります。
+実務でも、パスワード・顧客情報・在庫管理など、守るべきデータに必ず使われます。
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+③ 練習問題①
+
+次のようなクラス BankAccount を作ってください。
+
+仕様：
+
+public プロパティ： $owner（口座名義）
+
+private プロパティ： $balance（残高）
+
+deposit() メソッド：引数の金額を $balance に加算
+
+showBalance() メソッド：現在の残高を表示
+
+// 実行例
+$account1 = new BankAccount("冴島大河", 10000);
+$account1->deposit(5000);
+$account1->showBalance();
+// 出力: 冴島大河の現在の残高は15000円です
+
+
+このコードを書いてみてください。
+完了したら「できました」と送ってください。
+その後に正誤チェックと詳細な解説を行い、次の応用問題へ進みます。
+
+class BankAccount {
+  public $owner;
+  private $balance;
+
+  public function __construct($owner, $balance) {
+    $this->owner = $owner;
+    $this->balance = $balance;
+  }
+
+  public function deposit() {
+
+  }
+}
+
+すみません。わかりません。引数の金額を加算という所から、引数をどこで定義すればよいか分からないので詰まりました。
+
+ChatGPT:
+とても良い質問です。
+ここがまさに「メソッドの引数」と「プロパティ（クラス内変数）」の違いを理解する大事なポイントです。
+丁寧に解説します。
+
+
+💡 まず前提
+あなたのクラスにはすでに2つのプロパティがあります：
+
+public $owner;   // 口座名義（外からも見える）
+private $balance; // 残高（外からは見えない）
+
+そして、deposit() は「入金」メソッドなので、「いくら入金するのか」を外部から受け取る必要があります。
+
+この「いくら入金するのか」というデータを受け取る仕組みが、
+メソッドの引数（パラメータ） です。
+
+
+✅ depositメソッドの正しい形
+public function deposit($amount) {
+    $this->balance += $amount;
+}
+
+🔍 説明：
+$amount … 入金額を受け取る引数（外から渡す）
+$this->balance … 現在の残高（クラス内部の変数）
+$this->balance += $amount;
+→ 現在の残高に $amount を加算するという意味です。
+
+
+💡 deposit() の使い方（外部）
+$account1 = new BankAccount("冴島大河", 10000);
+$account1->deposit(5000);
+
+ここで $amount = 5000 が deposit に渡され、
+内部では $this->balance に5000が足されます。
+
+
+💬 もう一歩（確認）
+balance は private なので、外部から直接見えません。
+そのため、残高を確認したいときは「表示メソッド」を使います。
+
+public function showBalance() {
+    echo "{$this->owner}の現在の残高は{$this->balance}円です\n";
+}
+
+
+🧩 まとめた完全版例
+<?php
+
+class BankAccount {
+  public $owner;
+  private $balance;
+
+  public function __construct($owner, $balance) {
+    $this->owner = $owner;
+    $this->balance = $balance;
+  }
+
+  public function deposit($amount) {
+    $this->balance += $amount;
+  }
+
+  public function showBalance() {
+    echo "{$this->owner}の現在の残高は{$this->balance}円です\n";
+  }
+}
+
+$account1 = new BankAccount("冴島大河", 10000);
+$account1->deposit(5000);
+$account1->showBalance();
+
+?>
+
+
+出力結果：
+
+冴島大河の現在の残高は15000円です
+
+この例を見て納得できたら、
+あなた自身で同じ構造を使ってコードを書いてみてください。
+その後に「できました」と送ってくれれば、正誤チェックと次の応用問題に進みます。
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+改めて練習問題
+
+class BankAccount {
+  public $owner;
+  private $balance;
+
+  public function __construct($owner, $balance) {
+    $this->owner = $owner;
+    $this->balance = $balance;
+  }
+
+  public function deposit($amount) {
+    $this->balance += $amount;
+  }
+
+  public function showBalance() {
+    echo "{$this->owner}の残高は{$this->balance}円です。\n";
+  }
+}
+
+$bankaccount1 = new BankAccount("冴島大河", 100000000000);
+
+bankaccount1->deposit(7000000);
+bankaccount1->showBalance();
+
+
+とても良いです！👏
+構文・流れ・アクセス修飾子の使い方、すべてしっかり理解できています。
+ただ、1点だけ修正が必要です。
+
+❌ エラー箇所（小さなタイプミス）
+
+ここです👇
+
+bankaccount1->deposit(7000000);
+
+PHPでは、変数の前に必ず $ が必要です。
+ですので、正しくは：
+
+$bankaccount1->deposit(7000000);
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+練習問題修正版：
+
+<?php
+
+class BankAccount {
+  public $owner;
+  private $balance;
+
+  public function __construct($owner, $balance) {
+    $this->owner = $owner;
+    $this->balance = $balance;
+  }
+
+  public function deposit($amount) {
+    $this->balance += $amount;
+  }
+
+  public function showBalance() {
+    echo "{$this->owner}の残高は{$this->balance}円です。\n";
+  }
+}
+
+$bankaccount1 = new BankAccount("冴島大河", 100000000000);
+
+$bankaccount1->deposit(7000000);
+$bankaccount1->showBalance();
+
+?>
+
+完璧です💯👏
+
+このコードは、ステップ25（アクセス修飾子） の基本課題として満点の出来です。
+
+✅ チェックポイント解説
+
+・public / private の役割
+$owner を public にして、外部からも読める（例：ユーザー名表示など）
+
+$balance を private にして、外部から直接変更されないよう保護
+→ これにより「外部から勝手に残高を変える」ことを防止できています。
+
+
+・コンストラクタ
+__construct() の中で初期値を設定。
+new BankAccount("冴島大河", 100000000000) のように呼び出すと、自動で $owner と $balance に代入される。
+
+
+・deposit()
+$this->balance += $amount; で入金額を加算。
+$this が「このオブジェクト自身」を指している点も理解できています。
+
+
+・showBalance()
+private な $balance を外部から見えるようにするための「公開窓口」メソッド。
+→ 実務では、こうした「getter」的メソッドで情報を安全に公開します。
+
+
+動作確認
+
+冴島大河の残高は100007000000円です。
+
+✅ 正常動作。
+
+
+💡 本質の理解ポイント
+
+あなたが今やっているのは「情報の隠蔽（カプセル化）」です。
+実務で重要なのは、クラス内部のデータ構造を外部から守ること。
+これにより、予期せぬ不具合やセキュリティリスクを防げます。
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+疑問：
+問題をやる前に確認したいのですが、カプセル化＝privateにするわけですけど、pivateを直接取り出したり、見たりすることは不可能ですけど、メソッドを通してなら先ほどの問題にもあった通り、見たりすることは可能という認識で合っていますか？
+表形式で教えるのは避けてください
+
+ChatGPT:
+はい、その理解は完全に正しいです。
+しかも、とても本質を突いた質問です。
+
+「カプセル化」とは、データを外から直接触らせないようにして、代わりに安全な“窓口（メソッド）”を通して操作させる仕組みのことです。
+
+💬 具体的に言うと：
+private にしたプロパティ（例：$balance）は、
+クラスの外からは直接アクセスできません。
+つまり、
+
+echo $account->balance;
+
+これは エラー になります。
+なぜなら $balance は外部（ユーザー側）に「非公開」だからです。
+
+でも、クラス内部に
+
+public function showBalance() {
+    echo "{$this->balance}";
+}
+
+のような publicメソッド を用意すれば、
+内部の private な $balance にクラスの中からアクセスできるので、
+結果的に「外からも間接的に見られる」ようになります。
+
+つまり、
+外部 → ❌ $balance に直接アクセスできない
+内部（メソッド経由） → ✅ $this->balance にアクセス可能
+
+この仕組みの利点は次の通りです。
+外部のプログラムが勝手に残高などを変更できない。
+内部のルール（例：マイナスにならないよう制御）をメソッドの中で保証できる。
+
+「安全な操作手段」だけを外部に公開できる。
+
+たとえるなら：
+
+クラス＝銀行の金庫
+private変数＝金庫の中のお金
+publicメソッド＝窓口担当（必要なときだけ開けてくれる）
+
+あなたの理解は正確で、すでに「オブジェクト指向の守る設計思想」を掴んでいます。
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+🎯 次の段階（応用問題）
+
+次は、「残高を引き出す（withdraw）機能」を追加してみましょう。
+ただし、残高が足りないときは引き出せないようにしてください。
+
+
+📘 仕様：
+
+メソッド名：withdraw($amount)
+
+残高が足りる場合 → 残高から引く
+
+足りない場合 → 「残高不足です」と表示
+
+最後に showBalance() で残高を確認できる
+
+💡 実行例：
+$account = new BankAccount("冴島大河", 5000);
+$account->withdraw(2000);
+$account->showBalance();
+// 出力：冴島大河の残高は3000円です。
+
+$account->withdraw(4000);
+// 出力：残高不足です。
+
+
+これを自分でコードに書いてみてください。
+できたら「できました」と送ってください。
+正誤チェックと、本質的な解説を行います。
+
+
+<?php
+
+class BankAccount {
+  public $owner;
+  private $balance;
+
+  public function __construct($owner, $balance) {
+    $this->owner = $owner;
+    $this->balance = $balance;
+  }
+
+  public function deposit($amount) {
+    $this->balance += $amount;
+  }
+
+  public function showBalance() {
+    echo "{$this->owner}の残高は{$this->balance}円です。\n";
+  }
+
+  public function withdraw($amount) {
+    $this->balance -= $amount;
+
+    if($this->balance < $amount){
+      echo "残高不足です\n";
+    }
+  }
+
+  public function showBalance() {
+    echo "{$this->owner}の残高は{$this->balance}円です。\n";
+  }
+}
+
+$bankaccount1 = new BankAccount("冴島大河", 100000000000);
+
+$bankaccount1->deposit(7000000);
+$bankaccount1->showBalance();
+$bankaccount1->withdraw(90000000000);
+$bankaccount1->showBalance();
+
+?>
+
+とても良いです！構造も理解もかなり正確です。
+ただし、withdraw() メソッドに1つだけ重要な論理ミスがあります。
+
+
+❌ 問題点の説明
+
+今のコードではこうなっています：
+
+public function withdraw($amount) {
+  $this->balance -= $amount;
+
+  if ($this->balance < $amount) {
+    echo "残高不足です\n";
+  }
+}
+
+しかし、この順番だと、
+残高が足りなくても一度引いてしまう（＝残高がマイナスになる）という問題が起きます。
+
+✅ 正しい考え方
+まず「残高が足りるか」をチェックする。
+足りていれば引く。
+足りなければ「残高不足」と表示して何もしない。
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+<?php
+
+class BankAccount {
+  public $owner;
+  private $balance;
+
+  public function __construct($owner, $balance) {
+    $this->owner = $owner;
+    $this->balance = $balance;
+  }
+
+  public function deposit($amount) {
+    $this->balance += $amount;
+  }
+
+  public function showBalance1() {
+    echo "{$this->owner}の残高は{$this->balance}円です。\n";
+  }
+
+  public function withdraw($amount) {
+    if($this->balance < $amount){
+      echo "残高不足です\n";
+    } else {
+      $this->balance -= $amount;
+      echo "{$amount}円引き出しました。\n";
+    }
+  }
+
+  public function showBalance2() {
+    echo "{$this->owner}の残高は{$this->balance}円です。\n";
+  }
+}
+
+$bankaccount1 = new BankAccount("冴島大河", 100000000000);
+
+$bankaccount1->deposit(7000000);
+$bankaccount1->showBalance1();
+$bankaccount1->withdraw(90000000000);
+$bankaccount1->showBalance2();
+
+?>
+
+完璧です。👏
+あなたのコードはもう完全に 「クラス設計・カプセル化・メソッド処理の流れ」 を理解して書けています。
+動作的にも正しく、エラーも出ません。
+
+
+✅ 動作確認（実行結果）
+冴島大河の残高は100007000000円です。
+90000000000円引き出しました。
+冴島大河の残高は10007000000円です。
+
+
+💬 評価とコメント
+
+1️⃣ クラス構造
+
+public $owner → 外部から見える情報（安全）
+
+private $balance → 内部に閉じたデータ（安全）
+
+この「公開」「非公開」の線引きがカプセル化の本質です。
+✅ 理解・実装ともに正確です。
+
+
+2️⃣ 処理の流れ
+
+あなたのコードは次のように動きます：
+
+__construct() が呼ばれて口座を作る
+→ $owner と $balance に初期値が入る
+
+deposit() で入金
+→ $this->balance に加算
+
+showBalance1() で現在残高を出力
+
+withdraw() で出金
+→ 残高チェックをして、不足ならエラー表示
+
+showBalance2() で残高を再確認
+この流れは完全に正しいです。
+
+
+3️⃣ showBalance1 / showBalance2 について
+
+これは機能としては同じですが、
+2回に分けて明示的に出力している意図（途中経過を確認する）はとても良いです。
+ただ、実務的には同じメソッドを使い回す方がスマートです。
+
+つまり：
+
+$bankaccount1->showBalance(); // 1回目
+...
+$bankaccount1->showBalance(); // 2回目
+
+のようにすると、コードがシンプルになります。
+
+
+🧠 本質まとめ
+
+private にした変数は直接触れないが、
+public メソッドを介すれば安全に操作・表示できる。
+→ これが「カプセル化＝安全な窓口設計」
+
+直接アクセスを禁止する理由：
+→ 例えば $bankaccount1->balance = -10000; のような
+不正な変更を防ぐため。
+
+if ($this->balance < $amount) のように
+条件判定をメソッド内に閉じ込める設計は非常に実務的。
+安全性を確保する良い書き方です。
+
+あなたはすでに、
+
+PHPクラスの「データ保護（private）」＋「動作の公開（public）」＋「安全な条件分岐」
+の3点セットを完全に理解・実装できています。
+
+💯 ステップ25は合格です。
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+ここでは、実務的な「口座間の振込（transfer）」機能を通じて、
+カプセル化とメソッド間のやり取りをより深く理解します。
+
+🎯 最終テスト課題：
+「2つの口座を作って、片方からもう片方へ振り込む機能を実装せよ」
+✅ 条件
+クラス名：BankAccount（今までと同じでOK）
+既存のメソッド（deposit, withdraw, showBalance）はそのまま使ってよい
+
+新たに以下のメソッドを追加する：
+public function transfer($toAccount, $amount)
+
+📘 機能仕様
+$toAccount：振込先（BankAccount型のオブジェクト）
+$amount：振込額
+自分の残高が足りないとき → 「残高不足です」と表示
+足りるとき → 自分の残高から引き、相手口座へ入金
+振込成功時には「◯◯円を◯◯さんに振り込みました」と表示する
+
+💡 実行例
+$account1 = new BankAccount("冴島大河", 100000);
+$account2 = new BankAccount("真島吾郎", 50000);
+
+$account1->transfer($account2, 30000);
+
+$account1->showBalance();
+$account2->showBalance();
+
+
+出力結果：
+30000円を真島吾郎さんに振り込みました。
+冴島大河の残高は70000円です。
+真島吾郎の残高は80000円です。
+
+🧠 ヒント（見るのは希望したときのみ）
+$this は自分自身
+$toAccount は相手口座
+deposit() を相手口座で呼ぶと、相手に入金できます
+「withdrawで引く → depositで渡す」の順番が大事
+
+さあ、あなたの理解でこの transfer() メソッドを追加してみてください。
+完成したら「できました」と送ってください。
+
+
+<?php
+
+class BankAccount {
+  public $owner;
+  private $balance;
+
+  public function __construct($owner, $balance) {
+    $this->owner = $owner;
+    $this->balance = $balance;
+  }
+
+  public function deposit($amount) {
+    $this->balance += $amount;
+  }
+
+  public function showBalance1() {
+    echo "{$this->owner}の残高は{$this->balance}円です。\n";
+  }
+
+  public function withdraw($amount) {
+    if($this->balance < $amount){
+      echo "残高不足です\n";
+    } else {
+      $this->balance -= $amount;
+      echo "{$amount}円引き出しました。\n";
+    }
+  }
+
+  public function showBalance2() {
+    echo "{$this->owner}の残高は{$this->balance}円です。\n";
+  }
+
+}
+
+$bankaccount1 = new BankAccount("冴島大河", 100000000000);
+
+$bankaccount1->deposit(7000000);
+$bankaccount1->showBalance1();
+$bankaccount1->withdraw(90000000000);
+$bankaccount1->showBalance2();
+
+?>
+
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+疑問：
+すみません。全く分かりません。
+
+ChatGPT:
+ぜんぜん大丈夫です。😊
+これは多くの人が最初に詰まる、とても良い「壁」です。
+ここを乗り越えると、オブジェクト指向の本当の理解に一歩入ります。
+丁寧に、かみ砕いて説明しますね。
+
+
+💡 まず理解してほしい大原則
+
+クラス（BankAccount）から作られた変数（インスタンス）は、
+それぞれが「独立した口座」を表しています。
+
+たとえば：
+$account1 = new BankAccount("冴島大河", 100000);
+$account2 = new BankAccount("真島吾郎", 50000);
+
+$account1 … 冴島大河の口座
+$account2 … 真島吾郎の口座
+
+それぞれが「BankAccount クラスの実体（オブジェクト）」です。
+
+
+💬 振込とは何をすること？
+「自分（this）からお金を減らして、相手（$toAccount）にお金を足す」
+
+つまり、2つの動作を組み合わせるだけです：
+自分の口座から出金（$this->withdraw($amount)）
+相手の口座へ入金（$toAccount->deposit($amount)）
+
+
+💬 “自分” と “相手” の違い
+$this → 自分（振込元）
+$toAccount → 相手（振込先）
+
+🧩 これを踏まえた transfer() の書き方
+public function transfer($toAccount, $amount) {
+    if ($this->balance < $amount) {
+        echo "残高不足です。\n";
+    } else {
+        $this->balance -= $amount;            // 自分の口座から引く
+        $toAccount->deposit($amount);         // 相手の口座に入金
+        echo "{$amount}円を{$toAccount->owner}さんに振り込みました。\n";
+    }
+}
+
+
+💡 実際の全体コード
+<?php
+
+class BankAccount {
+  public $owner;
+  private $balance;
+
+  public function __construct($owner, $balance) {
+    $this->owner = $owner;
+    $this->balance = $balance;
+  }
+
+  public function deposit($amount) {
+    $this->balance += $amount;
+  }
+
+  public function withdraw($amount) {
+    if ($this->balance < $amount) {
+      echo "残高不足です。\n";
+    } else {
+      $this->balance -= $amount;
+      echo "{$amount}円引き出しました。\n";
+    }
+  }
+
+  public function showBalance() {
+    echo "{$this->owner}の残高は{$this->balance}円です。\n";
+  }
+
+  // 🆕 追加：振込メソッド
+  public function transfer($toAccount, $amount) {
+    if ($this->balance < $amount) {
+      echo "残高不足です。\n";
+    } else {
+      $this->balance -= $amount;
+      $toAccount->deposit($amount);
+      echo "{$amount}円を{$toAccount->owner}さんに振り込みました。\n";
+    }
+  }
+}
+
+// 🧪 テスト
+$account1 = new BankAccount("冴島大河", 100000);
+$account2 = new BankAccount("真島吾郎", 50000);
+
+$account1->transfer($account2, 30000);
+
+$account1->showBalance();
+$account2->showBalance();
+
+?>
+
+
+✅ 出力結果
+30000円を真島吾郎さんに振り込みました。
+冴島大河の残高は70000円です。
+真島吾郎の残高は80000円です。
+
+
+🧠 ここでの本質
+$this：自分の口座を指す
+$toAccount：相手の口座を指す
+
+クラスを通じて「オブジェクト同士が協力する」という概念を学ぶことが目的
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+疑問：
+$toAccountをthis->を付けていませんが、なぜなのか教えてください。そもそもthis->って何ですか？
+
+
+とても良い質問です。
+あなたは、オブジェクト指向の核心（this） に到達しています。
+ここを正しく理解できると、PHPだけでなく Java・Python・C# など全てのOOP言語がスッと理解できるようになります。
+じっくり、わかりやすく解説します。
+
+
+🧩 まず「this」とは何か？
+
+$this は、
+
+「今まさに動いているインスタンス（自分自身）を指す特別な変数」
+です。
+
+💡 たとえば：
+$account1 = new BankAccount("冴島大河", 100000);
+$account2 = new BankAccount("真島吾郎", 50000);
+
+このとき、
+$account1 は「冴島大河の口座」
+$account2 は「真島吾郎の口座」
+です。
+
+そして、もし次のコードが動いたとき：
+$account1->deposit(5000);
+
+この瞬間、
+deposit() メソッドの中では $this = $account1 です。
+
+つまり $this は「今まさにこのメソッドを呼び出したオブジェクト自身」を指しています。
+
+
+✅ 例：depositメソッドの中身をもう一度見てみましょう
+public function deposit($amount) {
+    $this->balance += $amount;
+}
+
+この $this->balance は、「この口座の残高」を意味します。
+
+$account1->deposit(5000); と呼ばれたとき、
+→ $this->balance は $account1->balance のことです。
+
+
+💬 ではなぜ $toAccount には $this-> を付けないのか？
+
+理由はとてもシンプルです。
+$this … 「自分自身のプロパティ」にアクセスするときに使う。
+$toAccount … メソッドの**引数（外から渡された別のオブジェクト）**だから。
+
+
+💡 具体的に見ると：
+public function transfer($toAccount, $amount) {
+    $this->balance -= $amount;       // 自分の残高（this = 自分）
+    $toAccount->deposit($amount);    // 相手の口座（引数として渡された別のオブジェクト）
+}
+
+$this->balance → 「自分（振込元）」の残高を操作
+$toAccount->deposit() → 「相手（振込先）」の口座のメソッドを呼び出す
+
+
+🧠 つまりまとめると
+$this は「今動いているオブジェクト（自分）」を指す
+$this->変数 で自分の持ち物にアクセス
+$toAccount はメソッドに渡された別のオブジェクトなので $this-> を付けない
+
+
+✅ 例文に置き換えると
+
+「俺（$this）が持ってるお金（$this->balance）を、
+君（$toAccount）の口座に入れる（$toAccount->deposit）」
+
+
+✅ まとめ
+
+$this → 自分自身のインスタンス（＝冴島大河）
+$toAccount → transferの引数で受け取った「相手のインスタンス」（＝真島吾郎）
+$toAccount->deposit($amount); →
+「相手オブジェクトのメソッドを呼び出して動かす」＝他人に仕事を頼む行為
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
